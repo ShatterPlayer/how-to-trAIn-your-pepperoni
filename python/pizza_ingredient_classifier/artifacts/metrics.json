@@ -1,0 +1,15 @@
+{
+  "epoch": 19,
+  "train_loss": 0.41397029856840767,
+  "train_accuracy": 0.8458333333333333,
+  "val_loss": 0.3165056109428406,
+  "val_accuracy": 0.9083333333333333,
+  "image_size": 64,
+  "classes": [
+    "ananas",
+    "bekon",
+    "pieczarki",
+    "salami",
+    "szpinak"
+  ]
+}
