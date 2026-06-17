@@ -15,6 +15,7 @@ namespace PizzaGame.Managers
         [SerializeField] private int maxIngredients = 4;
         [SerializeField] private float minIngredientRadius = 0.1f;
         [SerializeField] private float maxIngredientRadius = 0.45f;
+        [SerializeField] private float minIngredientSpacing = 0.3f;
 
         [Header("Timing")]
         [SerializeField] private float maxOrderDuration = 20f;
@@ -25,8 +26,10 @@ namespace PizzaGame.Managers
         private CustomerAgent currentCustomer;
 
         public PizzaOrder CurrentOrder { get; private set; }
+        public CustomerAgent CurrentCustomer { get; private set; }
 
         public event Action<PizzaOrder> OnOrderStarted;
+        public event Action<PizzaOrder> OnOrderCompleted;
 
         private void Start()
         {
@@ -84,20 +87,26 @@ namespace PizzaGame.Managers
 
         public bool TryStartNextOrder(CustomerAgent customer)
         {
+            currentCustomer = customer;
             if (!TryStartNextOrder())
             {
+                currentCustomer = null;
                 return false;
             }
-
-            currentCustomer = customer;
             return true;
         }
 
         public void CompleteCurrentOrder()
         {
+            var completed = CurrentOrder;
             CurrentOrder = null;
+            CurrentCustomer = null;
             currentCustomer = null;
             orderTimer = 0f;
+            if (completed != null)
+            {
+                OnOrderCompleted?.Invoke(completed);
+            }
         }
 
         private void StartOrder(PizzaOrder order)
@@ -108,7 +117,7 @@ namespace PizzaGame.Managers
             }
 
             CurrentOrder = order;
-            currentCustomer = null;
+            CurrentCustomer = currentCustomer;
             orderTimer = 0f;
             if (string.IsNullOrWhiteSpace(CurrentOrder.OrderId))
             {
@@ -142,8 +151,7 @@ namespace PizzaGame.Managers
             for (var i = 0; i < ingredientCount; i += 1)
             {
                 var type = GetRandomIngredientType();
-                var position = UnityEngine.Random.insideUnitCircle
-                    * UnityEngine.Random.Range(minIngredientRadius, maxIngredientRadius);
+                var position = GenerateNonOverlappingPosition(order);
                 order.Ingredients.Add(new IngredientRequirement
                 {
                     Type = type,
@@ -164,6 +172,33 @@ namespace PizzaGame.Managers
 
             var pick = UnityEngine.Random.Range(1, types.Length);
             return types[pick];
+        }
+
+        private Vector2 GenerateNonOverlappingPosition(PizzaOrder order)
+        {
+            var maxAttempts = 30;
+            for (var attempt = 0; attempt < maxAttempts; attempt++)
+            {
+                var pos = UnityEngine.Random.insideUnitCircle
+                    * UnityEngine.Random.Range(minIngredientRadius, maxIngredientRadius);
+                var valid = true;
+
+                foreach (var existing in order.Ingredients)
+                {
+                    if (Vector2.Distance(pos, existing.Position) < minIngredientSpacing)
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid)
+                {
+                    return pos;
+                }
+            }
+
+            return UnityEngine.Random.insideUnitCircle * maxIngredientRadius;
         }
     }
 }

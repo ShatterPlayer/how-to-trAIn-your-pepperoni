@@ -2,32 +2,32 @@ using System;
 using System.Collections.Generic;
 using PizzaGame.Models;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace PizzaGame.Managers
 {
     public class HandManager : MonoBehaviour
     {
         public static HandManager Instance { get; private set; }
+
         [Serializable]
-        private struct IngredientPrefabEntry
+        private struct IngredientSpriteEntry
         {
             public IngredientType Type;
-            public GameObject Prefab;
+            public Sprite Sprite;
         }
 
-        [Header("Hand Object")]
-        [SerializeField] private Transform handAnchor;
-        [SerializeField] private bool hideWhenEmpty = true;
+        [Header("UI Hand")]
+        [SerializeField] private Image handImage;
 
-        [Header("Prefabs")]
-        [SerializeField] private List<IngredientPrefabEntry> ingredientPrefabs =
-            new List<IngredientPrefabEntry>();
+        [Header("Sprites")]
+        [SerializeField] private List<IngredientSpriteEntry> ingredientSprites =
+            new List<IngredientSpriteEntry>();
 
         public IngredientType CurrentIngredient { get; private set; } = IngredientType.None;
 
-        private readonly Dictionary<IngredientType, GameObject> prefabLookup =
-            new Dictionary<IngredientType, GameObject>();
-        private GameObject currentInstance;
+        private readonly Dictionary<IngredientType, Sprite> spriteLookup =
+            new Dictionary<IngredientType, Sprite>();
 
         private void Awake()
         {
@@ -38,7 +38,7 @@ namespace PizzaGame.Managers
             }
 
             Instance = this;
-            BuildPrefabLookup();
+            BuildSpriteLookup();
             UpdateHandVisual();
         }
 
@@ -58,16 +58,16 @@ namespace PizzaGame.Managers
             SetIngredient(IngredientType.None);
         }
 
-        public bool TryGetCurrentPrefab(out GameObject prefab)
+        public bool TryGetCurrentSprite(out Sprite sprite)
         {
             if (CurrentIngredient == IngredientType.None)
             {
-                prefab = null;
+                sprite = null;
                 return false;
             }
 
-            return prefabLookup.TryGetValue(CurrentIngredient, out prefab)
-                && prefab != null;
+            return spriteLookup.TryGetValue(CurrentIngredient, out sprite)
+                && sprite != null;
         }
 
         private void HandleNumberInput()
@@ -104,65 +104,43 @@ namespace PizzaGame.Managers
             }
         }
 
-        private void BuildPrefabLookup()
+        private void BuildSpriteLookup()
         {
-            prefabLookup.Clear();
-            foreach (var entry in ingredientPrefabs)
+            spriteLookup.Clear();
+            foreach (var entry in ingredientSprites)
             {
-                if (entry.Type == IngredientType.None || entry.Prefab == null)
+                if (entry.Type == IngredientType.None || entry.Sprite == null)
                 {
                     continue;
                 }
 
-                prefabLookup[entry.Type] = entry.Prefab;
+                spriteLookup[entry.Type] = entry.Sprite;
             }
         }
 
         private void UpdateHandVisual()
         {
-            if (handAnchor == null)
+            if (handImage == null)
             {
                 return;
             }
 
             if (CurrentIngredient == IngredientType.None)
             {
-                if (hideWhenEmpty)
-                {
-                    ClearInstance();
-                }
-
+                handImage.gameObject.SetActive(false);
+                handImage.sprite = null;
                 return;
             }
 
-            if (prefabLookup.TryGetValue(CurrentIngredient, out var prefab))
+            if (spriteLookup.TryGetValue(CurrentIngredient, out var sprite))
             {
-                ReplaceInstance(prefab);
+                handImage.sprite = sprite;
+                handImage.gameObject.SetActive(true);
             }
-        }
-
-        private void ReplaceInstance(GameObject prefab)
-        {
-            if (currentInstance != null && currentInstance.name.StartsWith(prefab.name, StringComparison.Ordinal))
+            else
             {
-                return;
+                handImage.gameObject.SetActive(false);
             }
-
-            ClearInstance();
-            currentInstance = Instantiate(prefab, handAnchor);
-            currentInstance.transform.localPosition = Vector3.zero;
-            currentInstance.transform.localRotation = Quaternion.identity;
-        }
-
-        private void ClearInstance()
-        {
-            if (currentInstance == null)
-            {
-                return;
-            }
-
-            Destroy(currentInstance);
-            currentInstance = null;
         }
     }
 }

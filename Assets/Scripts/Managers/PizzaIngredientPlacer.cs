@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace PizzaGame.Managers
 {
@@ -7,12 +8,12 @@ namespace PizzaGame.Managers
         [Header("References")]
         [SerializeField] private Camera playerCamera;
         [SerializeField] private Transform pizzaRoot;
-        [SerializeField] private Transform placementRoot;
+        [SerializeField] private RectTransform placementRoot;
 
         [Header("Placement")]
         [SerializeField] private LayerMask pizzaLayerMask = ~0;
         [SerializeField] private float rayLength = 50f;
-        [SerializeField] private float ingredientScale = 0.1f;
+        [SerializeField] private float ingredientSpriteSize = 0.08f;
 
         private GameObject previewInstance;
 
@@ -30,16 +31,14 @@ namespace PizzaGame.Managers
 
             if (placementRoot == null)
             {
-                placementRoot = transform;
+                placementRoot = GetComponent<RectTransform>();
             }
-
         }
 
         private void Update()
         {
             if (HandManager.Instance == null || playerCamera == null)
             {
-                Debug.Log("HandManager or playerCamera reference is missing, cannot place ingredient.");
                 return;
             }
 
@@ -68,34 +67,28 @@ namespace PizzaGame.Managers
                 return;
             }
 
-            if (!HandManager.Instance.TryGetCurrentPrefab(out var prefab))
+            if (!HandManager.Instance.TryGetCurrentSprite(out var sprite))
             {
-                Debug.Log("No ingredient currently held, skipping placement.");
                 return;
             }
-            Debug.Log("Attempting to place ingredient...");
 
             if (!Physics.Raycast(ray, out var hit, rayLength, pizzaLayerMask))
             {
-                Debug.Log("Raycast did not hit a valid pizza surface.");
                 return;
             }
 
-            var hitLayer = hit.collider.gameObject.layer;
-            if ((pizzaLayerMask.value & (1 << hitLayer)) == 0)
-            {
-                Debug.Log("Hit object is not on the pizza layer, ignoring.");
-                return;
-            }
+            var ingredientGO = new GameObject($"Ingredient_{HandManager.Instance.CurrentIngredient}");
+            ingredientGO.transform.SetParent(placementRoot, false);
 
-            Debug.Log($"Placing ingredient at {hit.point} with normal {hit.normal}");
+            var img = ingredientGO.AddComponent<Image>();
+            img.sprite = sprite;
 
-            var rotation = Quaternion.identity;
-            var position = hit.point;
-            previewInstance = Instantiate(prefab, position, rotation);
-            previewInstance.transform.SetParent(placementRoot, true);
-            previewInstance.transform.position = position;
-            previewInstance.transform.localScale = Vector3.one * ingredientScale;
+            var rt = ingredientGO.GetComponent<RectTransform>();
+            var localPos = placementRoot.InverseTransformPoint(hit.point);
+            rt.anchoredPosition = new Vector2(localPos.x, localPos.y);
+            rt.sizeDelta = new Vector2(ingredientSpriteSize, ingredientSpriteSize);
+
+            previewInstance = ingredientGO;
         }
 
         private void UpdatePlacement(Ray ray)
@@ -110,7 +103,9 @@ namespace PizzaGame.Managers
                 return;
             }
 
-            previewInstance.transform.position = hit.point;
+            var localPos = placementRoot.InverseTransformPoint(hit.point);
+            var rt = previewInstance.GetComponent<RectTransform>();
+            rt.anchoredPosition = new Vector2(localPos.x, localPos.y);
         }
 
         private void FinishPlacement()
@@ -120,9 +115,22 @@ namespace PizzaGame.Managers
                 return;
             }
 
+            var ingredientType = HandManager.Instance.CurrentIngredient;
+            var worldPos = previewInstance.transform.position;
+            var localPos = pizzaRoot.InverseTransformPoint(worldPos);
+            var localPos2D = new Vector2(localPos.x, localPos.z);
+
+            if (PizzaManager.Instance != null)
+            {
+                PizzaManager.Instance.RegisterPlacement(
+                    ingredientType,
+                    localPos2D,
+                    previewInstance
+                );
+            }
+
             previewInstance = null;
             HandManager.Instance.ClearHand();
         }
-
     }
 }
