@@ -27,6 +27,7 @@ namespace PizzaGame.Managers
 
         public PizzaOrder CurrentOrder { get; private set; }
         public CustomerAgent CurrentCustomer { get; private set; }
+        public float OrderProgressNormalized => maxOrderDuration > 0f ? Mathf.Clamp01(orderTimer / maxOrderDuration) : 0f;
 
         public event Action<PizzaOrder> OnOrderStarted;
         public event Action<PizzaOrder> OnOrderCompleted;
