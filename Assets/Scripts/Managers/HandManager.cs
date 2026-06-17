@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using PizzaGame.Models;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace PizzaGame.Managers
 {
@@ -11,23 +10,26 @@ namespace PizzaGame.Managers
         public static HandManager Instance { get; private set; }
 
         [Serializable]
-        private struct IngredientSpriteEntry
+        private struct IngredientModelEntry
         {
             public IngredientType Type;
-            public Sprite Sprite;
+            public GameObject ModelPrefab;
         }
 
-        [Header("UI Hand")]
-        [SerializeField] private Image handImage;
+        [Header("3D Hand")]
+        [SerializeField] private Transform handRoot;
+        [SerializeField] private Transform attachmentPoint;
 
-        [Header("Sprites")]
-        [SerializeField] private List<IngredientSpriteEntry> ingredientSprites =
-            new List<IngredientSpriteEntry>();
+        [Header("Models")]
+        [SerializeField] private List<IngredientModelEntry> ingredientModels =
+            new List<IngredientModelEntry>();
 
         public IngredientType CurrentIngredient { get; private set; } = IngredientType.None;
 
-        private readonly Dictionary<IngredientType, Sprite> spriteLookup =
-            new Dictionary<IngredientType, Sprite>();
+        private readonly Dictionary<IngredientType, GameObject> modelLookup =
+            new Dictionary<IngredientType, GameObject>();
+
+        private GameObject currentHeldModel;
 
         private void Awake()
         {
@@ -38,7 +40,7 @@ namespace PizzaGame.Managers
             }
 
             Instance = this;
-            BuildSpriteLookup();
+            BuildModelLookup();
             UpdateHandVisual();
         }
 
@@ -58,16 +60,16 @@ namespace PizzaGame.Managers
             SetIngredient(IngredientType.None);
         }
 
-        public bool TryGetCurrentSprite(out Sprite sprite)
+        public bool TryGetCurrentPrefab(out GameObject prefab)
         {
             if (CurrentIngredient == IngredientType.None)
             {
-                sprite = null;
+                prefab = null;
                 return false;
             }
 
-            return spriteLookup.TryGetValue(CurrentIngredient, out sprite)
-                && sprite != null;
+            return modelLookup.TryGetValue(CurrentIngredient, out prefab)
+                && prefab != null;
         }
 
         private void HandleNumberInput()
@@ -80,66 +82,65 @@ namespace PizzaGame.Managers
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                SetIngredient(IngredientType.Cheese);
+                SetIngredient(IngredientType.Bacon);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                SetIngredient(IngredientType.Bacon);
+                SetIngredient(IngredientType.Spinach);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                SetIngredient(IngredientType.Spinach);
+                SetIngredient(IngredientType.Salami);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                SetIngredient(IngredientType.Salami);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
                 SetIngredient(IngredientType.Pineapple);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha6))
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
                 SetIngredient(IngredientType.Mushroom);
             }
         }
 
-        private void BuildSpriteLookup()
+        private void BuildModelLookup()
         {
-            spriteLookup.Clear();
-            foreach (var entry in ingredientSprites)
+            modelLookup.Clear();
+            foreach (var entry in ingredientModels)
             {
-                if (entry.Type == IngredientType.None || entry.Sprite == null)
+                if (entry.Type == IngredientType.None || entry.ModelPrefab == null)
                 {
                     continue;
                 }
 
-                spriteLookup[entry.Type] = entry.Sprite;
+                modelLookup[entry.Type] = entry.ModelPrefab;
             }
         }
 
         private void UpdateHandVisual()
         {
-            if (handImage == null)
+            if (currentHeldModel != null)
             {
-                return;
+                Destroy(currentHeldModel);
+                currentHeldModel = null;
+            }
+
+            if (handRoot != null)
+            {
+                handRoot.gameObject.SetActive(CurrentIngredient != IngredientType.None);
             }
 
             if (CurrentIngredient == IngredientType.None)
             {
-                handImage.gameObject.SetActive(false);
-                handImage.sprite = null;
                 return;
             }
 
-            if (spriteLookup.TryGetValue(CurrentIngredient, out var sprite))
+            if (modelLookup.TryGetValue(CurrentIngredient, out var prefab) && prefab != null)
             {
-                handImage.sprite = sprite;
-                handImage.gameObject.SetActive(true);
-            }
-            else
-            {
-                handImage.gameObject.SetActive(false);
+                var parent = attachmentPoint != null ? attachmentPoint : handRoot;
+                if (parent == null) return;
+
+                currentHeldModel = Instantiate(prefab, parent);
+                currentHeldModel.transform.localPosition = Vector3.zero;
             }
         }
     }

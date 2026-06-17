@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using PizzaGame.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,15 +8,29 @@ namespace PizzaGame.Managers
 {
     public class PizzaIngredientPlacer : MonoBehaviour
     {
+        [Serializable]
+        private struct IngredientSpriteEntry
+        {
+            public IngredientType Type;
+            public Sprite Sprite;
+        }
+
         [Header("References")]
         [SerializeField] private Camera playerCamera;
         [SerializeField] private Transform pizzaRoot;
         [SerializeField] private RectTransform placementRoot;
 
+        [Header("Placement Sprites")]
+        [SerializeField] private List<IngredientSpriteEntry> ingredientSprites =
+            new List<IngredientSpriteEntry>();
+
         [Header("Placement")]
         [SerializeField] private LayerMask pizzaLayerMask = ~0;
         [SerializeField] private float rayLength = 50f;
         [SerializeField] private float ingredientSpriteSize = 0.08f;
+
+        private readonly Dictionary<IngredientType, Sprite> spriteLookup =
+            new Dictionary<IngredientType, Sprite>();
 
         private GameObject previewInstance;
 
@@ -33,6 +50,8 @@ namespace PizzaGame.Managers
             {
                 placementRoot = GetComponent<RectTransform>();
             }
+
+            BuildSpriteLookup();
         }
 
         private void Update()
@@ -67,7 +86,13 @@ namespace PizzaGame.Managers
                 return;
             }
 
-            if (!HandManager.Instance.TryGetCurrentSprite(out var sprite))
+            var ingredientType = HandManager.Instance.CurrentIngredient;
+            if (ingredientType == IngredientType.None)
+            {
+                return;
+            }
+
+            if (!spriteLookup.TryGetValue(ingredientType, out var sprite) || sprite == null)
             {
                 return;
             }
@@ -77,7 +102,7 @@ namespace PizzaGame.Managers
                 return;
             }
 
-            var ingredientGO = new GameObject($"Ingredient_{HandManager.Instance.CurrentIngredient}");
+            var ingredientGO = new GameObject($"Ingredient_{ingredientType}");
             ingredientGO.transform.SetParent(placementRoot, false);
 
             var img = ingredientGO.AddComponent<Image>();
@@ -131,6 +156,20 @@ namespace PizzaGame.Managers
 
             previewInstance = null;
             HandManager.Instance.ClearHand();
+        }
+
+        private void BuildSpriteLookup()
+        {
+            spriteLookup.Clear();
+            foreach (var entry in ingredientSprites)
+            {
+                if (entry.Type == IngredientType.None || entry.Sprite == null)
+                {
+                    continue;
+                }
+
+                spriteLookup[entry.Type] = entry.Sprite;
+            }
         }
     }
 }

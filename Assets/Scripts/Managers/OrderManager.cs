@@ -126,7 +126,6 @@ namespace PizzaGame.Managers
 
             orderCounter += 1;
             OnOrderStarted?.Invoke(CurrentOrder);
-            Debug.Log($"Order started: {CurrentOrder.OrderId}");
         }
 
         private void TimeoutCurrentOrder()
@@ -167,7 +166,7 @@ namespace PizzaGame.Managers
             var types = (IngredientType[])System.Enum.GetValues(typeof(IngredientType));
             if (types.Length <= 1)
             {
-                return IngredientType.Cheese;
+                return IngredientType.Bacon;
             }
 
             var pick = UnityEngine.Random.Range(1, types.Length);
