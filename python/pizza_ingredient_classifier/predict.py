@@ -5,16 +5,15 @@ from pathlib import Path
 
 import torch
 from PIL import Image
-from torchvision import transforms
 
 from pizza_ingredient_classifier.config import (
     ARTIFACTS_DIR,
     CLASS_NAMES,
     DEFAULT_CONFIDENCE_THRESHOLD,
-    IMAGE_SIZE,
     INVALID_LABEL,
 )
 from pizza_ingredient_classifier.model import IngredientCNN
+from pizza_ingredient_classifier.preprocess import preprocess_tensor
 
 
 def parse_args() -> argparse.Namespace:
@@ -36,15 +35,8 @@ def load_labels(path: Path) -> list[str]:
 
 
 def preprocess(image_path: Path) -> torch.Tensor:
-    transform = transforms.Compose(
-        [
-            transforms.Grayscale(num_output_channels=1),
-            transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
-            transforms.ToTensor(),
-        ]
-    )
-    image = Image.open(image_path)
-    return transform(image).unsqueeze(0)
+    with Image.open(image_path) as image:
+        return preprocess_tensor(image)
 
 
 def main() -> None:

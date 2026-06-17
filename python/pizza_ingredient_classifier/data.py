@@ -3,13 +3,12 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from pizza_ingredient_classifier.config import IMAGE_SIZE
+from pizza_ingredient_classifier.preprocess import preprocess_pil_image
 
 
 def build_transforms(train: bool) -> transforms.Compose:
     ops = [
-        transforms.Grayscale(num_output_channels=1),
-        transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+        transforms.Lambda(preprocess_pil_image),
     ]
     if train:
         ops.extend(
