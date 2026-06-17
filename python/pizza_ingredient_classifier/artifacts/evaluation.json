@@ -1,0 +1,434 @@
+{
+  "passed": true,
+  "target_val_accuracy": 0.95,
+  "threshold": 0.75,
+  "validation": {
+    "accuracy": 1.0,
+    "per_class": {
+      "ananas": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 60
+      },
+      "bekon": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 60
+      },
+      "pieczarki": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 60
+      },
+      "salami": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 60
+      },
+      "szpinak": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 60
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "ananas",
+        "bekon",
+        "pieczarki",
+        "salami",
+        "szpinak"
+      ],
+      "matrix": [
+        [
+          60,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          60,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          60,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          60,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          60
+        ]
+      ]
+    },
+    "loss": 0.007368879256149133
+  },
+  "manual_tests": {
+    "accuracy": 1.0,
+    "correct": 5,
+    "total": 5,
+    "all_correct": true,
+    "predictions": [
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.999977707862854,
+        "raw_probabilities": {
+          "ananas": 0.999977707862854,
+          "bekon": 1.1835664736281615e-05,
+          "pieczarki": 4.444664227776229e-06,
+          "salami": 1.1152017087567856e-09,
+          "szpinak": 6.024905360391131e-06
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.8013044595718384,
+        "raw_probabilities": {
+          "ananas": 0.08597680181264877,
+          "bekon": 0.8013044595718384,
+          "pieczarki": 0.1116984412074089,
+          "salami": 1.5237678496760054e-07,
+          "szpinak": 0.0010201948462054133
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "expected_label": "bekon",
+        "correct": true
+      },
+      {
+        "label": "pieczarki",
+        "raw_label": "pieczarki",
+        "confidence": 1.0,
+        "raw_probabilities": {
+          "ananas": 1.0821512956560309e-11,
+          "bekon": 7.411129216764117e-23,
+          "pieczarki": 1.0,
+          "salami": 2.3828634378164626e-12,
+          "szpinak": 2.861339554090818e-20
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_pieczarka.png",
+        "expected_label": "pieczarki",
+        "correct": true
+      },
+      {
+        "label": "salami",
+        "raw_label": "salami",
+        "confidence": 1.0,
+        "raw_probabilities": {
+          "ananas": 4.834338224873891e-12,
+          "bekon": 1.7859539578822792e-29,
+          "pieczarki": 2.3554641570555646e-10,
+          "salami": 1.0,
+          "szpinak": 8.035632164012096e-14
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_salami.png",
+        "expected_label": "salami",
+        "correct": true
+      },
+      {
+        "label": "szpinak",
+        "raw_label": "szpinak",
+        "confidence": 1.0,
+        "raw_probabilities": {
+          "ananas": 1.219060824508844e-10,
+          "bekon": 9.258569523784332e-19,
+          "pieczarki": 2.343714191581415e-17,
+          "salami": 3.460488731503453e-14,
+          "szpinak": 1.0
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_szpinak.png",
+        "expected_label": "szpinak",
+        "correct": true
+      }
+    ]
+  },
+  "rotated_manual_tests": {
+    "accuracy": 1.0,
+    "correct": 16,
+    "total": 16,
+    "all_correct": true,
+    "predictions": [
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.999977707862854,
+        "raw_probabilities": {
+          "ananas": 0.999977707862854,
+          "bekon": 1.1835664736281615e-05,
+          "pieczarki": 4.444664227776229e-06,
+          "salami": 1.1152017087567856e-09,
+          "szpinak": 6.024905360391131e-06
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "angle": 0,
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.9999992847442627,
+        "raw_probabilities": {
+          "ananas": 0.9999992847442627,
+          "bekon": 7.690803158766357e-07,
+          "pieczarki": 4.808172957004864e-12,
+          "salami": 4.447644780681409e-13,
+          "szpinak": 4.8133825814034026e-09
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "angle": 45,
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.9955283999443054,
+        "raw_probabilities": {
+          "ananas": 0.9955283999443054,
+          "bekon": 6.230020062503172e-06,
+          "pieczarki": 1.5119014928899333e-09,
+          "salami": 2.6229034569280607e-11,
+          "szpinak": 0.004465483594685793
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "angle": 90,
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.9999995231628418,
+        "raw_probabilities": {
+          "ananas": 0.9999995231628418,
+          "bekon": 4.4993146275373874e-07,
+          "pieczarki": 3.199417974997232e-08,
+          "salami": 1.6779272415945456e-10,
+          "szpinak": 3.834478690123433e-08
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "angle": 135,
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.9999960660934448,
+        "raw_probabilities": {
+          "ananas": 0.9999960660934448,
+          "bekon": 2.5439655928494176e-06,
+          "pieczarki": 3.174973395303482e-09,
+          "salami": 9.856035432243004e-11,
+          "szpinak": 1.3800849956169259e-06
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "angle": 180,
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.9999978542327881,
+        "raw_probabilities": {
+          "ananas": 0.9999978542327881,
+          "bekon": 1.1886199899890926e-06,
+          "pieczarki": 5.45205921298475e-07,
+          "salami": 1.9828133926425018e-11,
+          "szpinak": 3.585529100291751e-07
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "angle": 225,
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.9796253442764282,
+        "raw_probabilities": {
+          "ananas": 0.9796253442764282,
+          "bekon": 1.5054398545544245e-06,
+          "pieczarki": 1.2145554562081884e-09,
+          "salami": 1.7309427224887486e-09,
+          "szpinak": 0.0203731469810009
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "angle": 270,
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "ananas",
+        "raw_label": "ananas",
+        "confidence": 0.9999998807907104,
+        "raw_probabilities": {
+          "ananas": 0.9999998807907104,
+          "bekon": 8.05997046882112e-08,
+          "pieczarki": 6.007942143781975e-09,
+          "salami": 2.8549575897818258e-11,
+          "szpinak": 5.46902123588211e-09
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_ananas.png",
+        "angle": 315,
+        "expected_label": "ananas",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.8013044595718384,
+        "raw_probabilities": {
+          "ananas": 0.08597680181264877,
+          "bekon": 0.8013044595718384,
+          "pieczarki": 0.1116984412074089,
+          "salami": 1.5237678496760054e-07,
+          "szpinak": 0.0010201948462054133
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "angle": 0,
+        "expected_label": "bekon",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.9977388381958008,
+        "raw_probabilities": {
+          "ananas": 0.002202926203608513,
+          "bekon": 0.9977388381958008,
+          "pieczarki": 2.561246548182794e-09,
+          "salami": 4.015409830809488e-14,
+          "szpinak": 5.825661355629563e-05
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "angle": 45,
+        "expected_label": "bekon",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.9972395896911621,
+        "raw_probabilities": {
+          "ananas": 0.0005768467672169209,
+          "bekon": 0.9972395896911621,
+          "pieczarki": 6.601972302178183e-08,
+          "salami": 7.122177739064817e-13,
+          "szpinak": 0.002183498814702034
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "angle": 90,
+        "expected_label": "bekon",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.9997528195381165,
+        "raw_probabilities": {
+          "ananas": 0.00022804047330282629,
+          "bekon": 0.9997528195381165,
+          "pieczarki": 3.148117988516219e-09,
+          "salami": 7.230384910586474e-13,
+          "szpinak": 1.923375020851381e-05
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "angle": 135,
+        "expected_label": "bekon",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.9315603971481323,
+        "raw_probabilities": {
+          "ananas": 0.0341997854411602,
+          "bekon": 0.9315603971481323,
+          "pieczarki": 0.03383117541670799,
+          "salami": 2.972283041913215e-08,
+          "szpinak": 0.0004086925182491541
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "angle": 180,
+        "expected_label": "bekon",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.9986978769302368,
+        "raw_probabilities": {
+          "ananas": 0.0012944925110787153,
+          "bekon": 0.9986978769302368,
+          "pieczarki": 7.784395350540763e-09,
+          "salami": 1.0487451192035552e-14,
+          "szpinak": 7.574522442155285e-06
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "angle": 225,
+        "expected_label": "bekon",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.9966533780097961,
+        "raw_probabilities": {
+          "ananas": 0.0005541561404243112,
+          "bekon": 0.9966533780097961,
+          "pieczarki": 3.151003369339378e-08,
+          "salami": 8.486424453793551e-13,
+          "szpinak": 0.002792458748444915
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "angle": 270,
+        "expected_label": "bekon",
+        "correct": true
+      },
+      {
+        "label": "bekon",
+        "raw_label": "bekon",
+        "confidence": 0.9995999932289124,
+        "raw_probabilities": {
+          "ananas": 0.0003902919124811888,
+          "bekon": 0.9995999932289124,
+          "pieczarki": 2.7462974117042904e-09,
+          "salami": 4.1144868003113733e-13,
+          "szpinak": 9.713075996842235e-06
+        },
+        "file": "/home/wkaz/Projects/how-to-trAIn-your-pepperoni/samples_raw/test_bekon.png",
+        "angle": 315,
+        "expected_label": "bekon",
+        "correct": true
+      }
+    ]
+  }
+}

@@ -10,8 +10,13 @@ from pizza_ingredient_classifier.config import (
     DEFAULT_DATA_DIR,
     DEFAULT_MANUAL_DATA_DIR,
     IMAGE_SIZE,
+    ROTATION_INVARIANT_CLASS_NAMES,
 )
+from pizza_ingredient_classifier.preprocess import load_preprocessed_image, preprocess_pil_image
 from pizza_ingredient_classifier.utils import ensure_dir
+
+
+ROTATION_ANGLES = (0, 45, 90, 135, 180, 225, 270, 315)
 
 
 def parse_args() -> argparse.Namespace:
@@ -23,8 +28,8 @@ def parse_args() -> argparse.Namespace:
         help="Directory with original class folders, e.g. samples_raw/salami/*.png",
     )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_DATA_DIR)
-    parser.add_argument("--train-count", type=int, default=160)
-    parser.add_argument("--val-count", type=int, default=40)
+    parser.add_argument("--train-count", type=int, default=240)
+    parser.add_argument("--val-count", type=int, default=60)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
@@ -37,9 +42,7 @@ def list_images(path: Path) -> list[Path]:
 
 
 def load_canvas(image_path: Path) -> Image.Image:
-    image = Image.open(image_path).convert("L")
-    image = ImageOps.pad(image, (IMAGE_SIZE, IMAGE_SIZE), color=255)
-    return image
+    return load_preprocessed_image(image_path)
 
 
 def random_affine(image: Image.Image) -> Image.Image:
@@ -82,6 +85,17 @@ def random_flip(image: Image.Image) -> Image.Image:
     return image
 
 
+def rotate_and_center(image: Image.Image, angle: float) -> Image.Image:
+    rotated = image.rotate(angle, resample=Image.Resampling.BILINEAR, expand=True, fillcolor=255)
+    return preprocess_pil_image(rotated)
+
+
+def random_orientation(image: Image.Image, class_name: str) -> Image.Image:
+    if class_name not in ROTATION_INVARIANT_CLASS_NAMES:
+        return image
+    return rotate_and_center(image, random.uniform(0, 360))
+
+
 def random_crop_pad(image: Image.Image) -> Image.Image:
     border = random.randint(0, 6)
     expanded = ImageOps.expand(image, border=border, fill=255)
@@ -98,8 +112,9 @@ def finalize(image: Image.Image) -> Image.Image:
     return image.convert("L")
 
 
-def augment(base_image: Image.Image) -> Image.Image:
-    image = random_affine(base_image)
+def augment(base_image: Image.Image, class_name: str) -> Image.Image:
+    image = random_orientation(base_image, class_name)
+    image = random_affine(image)
     image = random_flip(image)
     image = random_crop_pad(image)
     image = random_stroke_change(image)
@@ -136,9 +151,16 @@ def save_originals_and_augmented(
         image.save(split_dir / f"{prefix}_{saved:03d}.png")
         saved += 1
 
+        if class_name in ROTATION_INVARIANT_CLASS_NAMES:
+            for angle in ROTATION_ANGLES[1:]:
+                if saved >= target_count:
+                    break
+                rotate_and_center(image, angle).save(split_dir / f"{prefix}_{saved:03d}.png")
+                saved += 1
+
     while saved < target_count:
         base = random.choice(base_images)
-        variant = augment(base)
+        variant = augment(base, class_name)
         variant.save(split_dir / f"{prefix}_{saved:03d}.png")
         saved += 1
 
