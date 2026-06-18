@@ -191,12 +191,12 @@ namespace PizzaGame.Managers
 
         private IEnumerator DisplayResult(ScoringResult result)
         {
-            string text = $"Punkty: +{result.pointsEarned}";
+            string text = $"Points: +{result.pointsEarned}";
             if (result.perfectBonus)
             {
-                text += "\n<b>PERFEKCYJNIE! Bonus x1.5!</b>";
+                text += "\n<b>PERFECT! x1.5 Bonus!</b>";
             }
-            text += $"\nPoprawne: {result.correctPlacements} | Brakujące: {result.missingIngredients} | Złe: {result.wrongPlacements}";
+            text += $"\nCorrect: {result.correctPlacements} | Missing: {result.missingIngredients} | Wrong: {result.wrongPlacements}";
             resultText.text = text;
             resultText.gameObject.SetActive(true);
 
@@ -208,7 +208,7 @@ namespace PizzaGame.Managers
         {
             if (scoreText != null)
             {
-                scoreText.text = $"Wynik: {totalScore}";
+                scoreText.text = $"Score: {totalScore}";
             }
         }
 
@@ -226,7 +226,7 @@ namespace PizzaGame.Managers
             scoreTmp.fontSize = 36;
             scoreTmp.alignment = TextAlignmentOptions.TopLeft;
             scoreTmp.color = Color.white;
-            scoreTmp.text = "Wynik: 0";
+            scoreTmp.text = "Score: 0";
             var scoreRect = scoreTmp.rectTransform;
             scoreRect.anchorMin = new Vector2(0, 1);
             scoreRect.anchorMax = new Vector2(0, 1);

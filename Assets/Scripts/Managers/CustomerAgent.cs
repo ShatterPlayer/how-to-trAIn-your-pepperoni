@@ -261,6 +261,11 @@ namespace PizzaGame.Managers
                 OrderManager.Instance.CompleteCurrentOrder();
             }
 
+            if (PizzaGame.Infrastructure.AudioManager.Instance != null)
+            {
+                PizzaGame.Infrastructure.AudioManager.Instance.PlayYay();
+            }
+
             SetState(CustomerState.Leaving);
         }
 
@@ -270,6 +275,11 @@ namespace PizzaGame.Managers
                 && CurrentState != CustomerState.Ordering)
             {
                 return;
+            }
+
+            if (PizzaGame.Infrastructure.AudioManager.Instance != null)
+            {
+                PizzaGame.Infrastructure.AudioManager.Instance.PlayFail();
             }
 
             SetState(CustomerState.Leaving);
